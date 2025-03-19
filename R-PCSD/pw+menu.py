@@ -11,6 +11,7 @@ lcd = I2C_LCD(i2c, 0x27)  # Use the correct address (0x27 is common)
 relay = Pin(16, Pin.OUT)
 led = Pin(15, Pin.OUT)
 led.value(0)  # Initialize LED to OFF
+relayforswitch = Pin(18, Pin.OUT)
 
 # Create a map between keypad buttons and characters
 matrix_keys = [['1', '4', '7', 'A'],
@@ -89,15 +90,17 @@ def scankeysformenu(timeout=30):
     utime.sleep(2)
 
 def activate_relay():
+    relayforswitch(1)
     print("Activating relay...")
     lcd.clear()
     lcd.message("Starting PC")
     relay.value(1)  # Turn the relay ON
-    time.sleep(1)
+    time.sleep(3)
     relay.value(0)  # Turn the relay OFF
     led.value(1)  # Turn ON LED
     utime.sleep(3)
-    led.value(0)  # Turn OFF LED
+    led.value(0)  # Turn OFF 
+    relayforswitch(0)
 
 def toggle_led():
     print("Toggling LED...")
