@@ -29,7 +29,6 @@ row_pins = []
 guess = []
 # Our secret pin, shhh do not tell anyone
 secret_pin = ['7', '8', '8', '4']
-menuentry_1 = ['1']
 
 # Initialize row and column pins
 for x in range(4):
@@ -40,7 +39,7 @@ for x in range(4):
 def scankeys():
     for row in range(4):
         row_pins[row].value(1)  # Set current row HIGH
-        for col in range(4): 
+        for col in range(4):
             if col_pins[col].value() == 1:
                 key_press = matrix_keys[row][col]
                 print("You have pressed:", key_press)
@@ -53,47 +52,59 @@ def scankeys():
                 if len(guess) == 4:
                     checkPin(guess)
                     guess.clear()  # Clear guess after checking
-                    scankeysformenu()
-                    
+        
         row_pins[row].value(0)  # Set row back to LOW
 
-def scankeysformenu():
-    for row in range(4):
-        row_pins[row].value(1)  # Set current row HIGH
-        for col in range(4): 
-            if col_pins[col].value() == 1:
-                key_press = matrix_keys[row][col]
-                print("You have pressed:", key_press)
-                lcd.clear()
-                lcd.message("Menu: " + key_press)  # Display pressed key
-                utime.sleep(0.3)  # Debounce delay
-                guess.append(key_press)
-                
-                # Check if enough keys have been pressed
-                if len(guess) == 1:
-                    checkPinmenu(guess)
-                    guess.clear()  # Clear guess after checking
-                        
+def display_menu():
+    lcd.clear()
+    lcd.message("1: Start PC\n2: LED Toggle\n3: Exit")
+    utime.sleep(1)
+
+def scankeysformenu(timeout=30):
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        for row in range(4):
+            row_pins[row].value(1)  # Set current row HIGH
+            for col in range(4):
+                if col_pins[col].value() == 1:
+                    key_press = matrix_keys[row][col]
+                    print("Menu Selection:", key_press)
+                    lcd.clear()
+                    lcd.message("Selected: " + key_press)
+                    utime.sleep(0.3)  # Debounce delay
                     
-        row_pins[row].value(0)  # Set row back to LOW
+                    if key_press == '1':
+                        activate_relay()
+                    elif key_press == '2':
+                        toggle_led()
+                    elif key_press == '3':
+                        lcd.clear()
+                        lcd.message("Exiting menu")
+                        utime.sleep(2)
+                        return
+                    return  # Exit once a selection is made
+            row_pins[row].value(0)  # Set row back to LOW
+    lcd.clear()
+    lcd.message("Menu timed out")
+    utime.sleep(2)
 
+def activate_relay():
+    print("Activating relay...")
+    lcd.clear()
+    lcd.message("Starting PC")
+    relay.value(1)  # Turn the relay ON
+    time.sleep(1)
+    relay.value(0)  # Turn the relay OFF
+    led.value(1)  # Turn ON LED
+    utime.sleep(3)
+    led.value(0)  # Turn OFF LED
 
-def checkPinmenu(guess):
-    if guess == menuentry_1:
-        print("You got the secret pin correct")
-        lcd.clear()
-        lcd.message("Starting PC")
-        relay.value(0)  # Turn the relay ON
-        time.sleep(1)
-        relay.value(1)  # Turn the relay OFF
-        time.sleep(1)
-        led.value(1)  # Turn ON LED
-        utime.sleep(3)
-        led.value(0)  # Turn OFF LED
-    else:
-        print("Better luck next time")
-        lcd.clear()
-        lcd.message("No existing shortcut")
+def toggle_led():
+    print("Toggling LED...")
+    lcd.clear()
+    lcd.message("Toggling LED")
+    led.value(not led.value())  # Toggle LED state
+    utime.sleep(1)
 
 def checkPin(guess):
     if guess == secret_pin:
@@ -103,11 +114,12 @@ def checkPin(guess):
         led.value(1)  # Turn ON LED
         utime.sleep(3)
         led.value(0)  # Turn OFF LED
+        display_menu()
+        scankeysformenu()
     else:
         print("Better luck next time")
         lcd.clear()
         lcd.message("Try again!")
-
 
 print("Enter the secret Pin")
 lcd.clear()
@@ -115,6 +127,3 @@ lcd.message("Enter Pin:")
 
 while True:
     scankeys()
-    if guess == menuentry_1:
-        checkPinmenu()
-    
