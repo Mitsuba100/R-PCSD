@@ -25,7 +25,7 @@ Componets:
 
 
 
-![alt text](image.png)
+![alt text](Pics/image.png)
 
 
 *you can use any pi pico this is just my recommendation
@@ -39,19 +39,19 @@ Now like in the Picture you connect the LCD display to the right GPIO Pins (you 
 
 
 
-![alt text](image-1.png)
+![alt text](Pics/image-1.png)
 
 Step 3:
 
 Now attach the keypad to the Breadboard or the Development Board (The cabel has to face the pi like in the picture and it has to be a 4x4 Matrix keypad you)
 
-![alt text](image-2.png)
+![alt text](Pics/image-2.png)
 
 Step 4:
 
 Now we need to attach the Relay Switch as in the Picure
 
-![alt text](image-3.png)
+![alt text](Pics/image-3.png)
 
 Step 4:
 
@@ -59,4 +59,4 @@ Connect the the COM on your Motherboard to Ground(GND) NC(Normly Closed) to the 
 Install Micro python an the Pico 
 Uplaod the Api and the code to the Pico via Thonny or your editor of choise and set the pin of you divice and 3d print the case (Instructions are in Progress)
 
-![alt text](image-4.png)
+![alt text](Pics/image-4.png)
