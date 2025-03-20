@@ -8,7 +8,7 @@ from I2C_LCD import I2C_LCD  # Ensure this matches your library file
 
 # Setup I2C for the LCD (SDA on Pin 0, SCL on Pin 1)
 i2c = I2C(0, scl=Pin(1), sda=Pin(0))  # Adjust pins as needed
-lcd = I2C_LCD(i2c, 0x27)  # Use the correct address (0x27 is common)
+lcd = I2C_LCD(i2c, 0x27)  # Use the correct address (0x27 is common) to find out the address use the i2cscan.py file
 
 # Initialize the relay and LED
 relay = Pin(16, Pin.OUT)
