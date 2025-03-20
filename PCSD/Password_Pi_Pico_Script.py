@@ -15,7 +15,8 @@ relay = Pin(16, Pin.OUT)
 led = Pin(15, Pin.OUT)
 led.value(0)  # Initialize LED to OFF
 
-# Create a map between keypad buttons and characters
+# Create a map between keypad buttons and characters 
+# You may have to edit this if you use a diverent keypad
 matrix_keys = [['1', '4', '7', 'A'],
                ['2', '5', '8', 'B'],
                ['3', '6', '9', '#'],

@@ -8,7 +8,8 @@ Guide:
 Step 1: get the components 
 
 Componets:
-([Keypad 4x4 Matrix keypad**](https://www.amazon.de/AZDelivery-4x4-Matrix-Keypad-Tastatur/dp/B07D2FGQL4/ref=asc_df_B07D2FGQL4?mcid=d83246c06e88361b93eb7afb184e75bb&th=1&tag=googshopde-21&linkCode=df0&hvadid=696949000519&hvpos=&hvnetw=g&hvrand=14275680819693228858&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9042612&hvtargid=pla-835673982138&gad_source=1))
+
+[Keypad 4x4 Matrix keypad**](https://www.amazon.de/AZDelivery-4x4-Matrix-Keypad-Tastatur/dp/B07D2FGQL4/ref=asc_df_B07D2FGQL4?mcid=d83246c06e88361b93eb7afb184e75bb&th=1&tag=googshopde-21&linkCode=df0&hvadid=696949000519&hvpos=&hvnetw=g&hvrand=14275680819693228858&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9042612&hvtargid=pla-835673982138&gad_source=1)
 
 [I2C Display w/BUS**](https://www.amazon.de/AZDelivery-HD44780-Display-Zeichen-Schnittstelle/dp/B07V5K3ZVB/ref=sr_1_11?dib=eyJ2IjoiMSJ9.GSoynZq7OeAxuzqXqv4mFcrimB-RUqHUzUxbwn4uvYyUbCxbfDJv7AmTfhOiLj4tZgTP2cuf2tMp3zO8PiCHS1kEGQkRRZ7BdUEmEtDXlKku4EPgSsz79oyYBPoK4kVOFAMoFkxZDW7AaQ1L0y663QXK8CqTueGcPjj_RmShviAWxiAW3b1CJX8_LRUrqE0mJdXKevEqygwwynNR_x6yjIQut2Vw5nL_otEYrBQnk-I.W2OcuVHYjOiQrrL2PSCWePTMwS9qclDP6J4j-2Hxvnc&dib_tag=se&keywords=i2c%2Bdisplay&qid=1742495789&sr=8-11&th=1)
 
@@ -39,3 +40,23 @@ Now like in the Picture you connect the LCD display to the right GPIO Pins (you 
 
 
 ![alt text](image-1.png)
+
+Step 3:
+
+Now attach the keypad to the Breadboard or the Development Board (The cabel has to face the pi like in the picture and it has to be a 4x4 Matrix keypad you)
+
+![alt text](image-2.png)
+
+Step 4:
+
+Now we need to attach the Relay Switch as in the Picure
+
+![alt text](image-3.png)
+
+Step 4:
+
+Connect the the COM on your Motherboard to Ground(GND) NC(Normly Closed) to the Positve terminal (In the Picture how the Relay should look)
+Install Micro python an the Pico 
+Uplaod the Api and the code to the Pico via Thonny or your editor of choise and set the pin of you divice and 3d print the case (Instructions are in Progress)
+
+![alt text](image-4.png)
