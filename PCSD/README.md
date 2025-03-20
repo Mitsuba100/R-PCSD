@@ -7,4 +7,5 @@ Guide
 
 
 
-Step 1:
+Step 1: get the components 
+![alt text](image.png)
