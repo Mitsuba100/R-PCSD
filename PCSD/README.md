@@ -1,7 +1,7 @@
 This is the finished version of the code. i will make the guide soon 
 
 
-
+The guide is not finished yet
 
 Guide:
 
@@ -60,3 +60,7 @@ Install Micro python an the Pico
 Uplaod the Api and the code to the Pico via Thonny or your editor of choise and set the pin of you divice and 3d print the case (Instructions are in Progress)
 
 ![alt text](Pics/image-4.png)
+
+Step 5: (optional)
+
+Print the case fit the LCD Display in to the Lid (you may need to file it down a bit)  
