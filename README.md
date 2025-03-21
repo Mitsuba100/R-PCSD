@@ -1,6 +1,7 @@
 # R-PCSD
 R/PCSD stands for Remote PC Starting Divice
 
+Thank you T-622 for the i2c lcd api https://github.com/T-622/RPI-PICO-I2C-LCD
 
 
 
