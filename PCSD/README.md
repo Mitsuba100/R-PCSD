@@ -1,6 +1,6 @@
 This is the finished version of the code. i will make the guide soon 
 
-
+The case still needs to be finished
 The guide is not finished yet
 
 Guide:
