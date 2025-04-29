@@ -1,11 +1,23 @@
 from machine import Pin, I2C
 import utime
 import time
-from I2C_LCD import I2C_LCD  # Ensure this matches your library file
+from lcd_api import LcdApi
+from pico_i2c_lcd import I2cLcd
+from machine import I2C
+from lcd_api import LcdApi
+from pico_i2c_lcd import I2cLcd
 
-# Setup I2C for the LCD (SDA on Pin 0, SCL on Pin 1)
-i2c = I2C(0, scl=Pin(1), sda=Pin(0))  # Adjust pins as needed
-lcd = I2C_LCD(i2c, 0x27)  # Use the correct address (0x27 is common)
+
+# I2C configuration
+I2C_ADDR = 0x27  # Update this if the I2C scan shows a different address
+I2C_NUM_ROWS = 2
+I2C_NUM_COLS = 16
+
+#i2c = I2C(0, scl=Pin(1), sda=Pin(0))  # Adjust pins as needed
+#lcd = I2C_LCD(i2c, 0x27)  # Use the correct address (0x27 is common)
+#lcd = I2C(0, sda=Pin(0), scl=Pin(1), freq=100000)  # Set to 100 kHz
+i2c = I2C(0, sda=machine.Pin(0), scl=machine.Pin(1), freq=400000)
+lcd = I2cLcd(i2c, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)   
 
 # Initialize the relay and LED
 relay = Pin(16, Pin.OUT)
@@ -45,7 +57,7 @@ def scankeys():
                 key_press = matrix_keys[row][col]
                 print("You have pressed:", key_press)
                 lcd.clear()
-                lcd.message("You pressed: " + key_press)  # Display pressed key
+                lcd.putstr("You pressed: " + key_press)  # Display pressed key
                 utime.sleep(0.3)  # Debounce delay
                 guess.append(key_press)
                 
@@ -58,7 +70,7 @@ def scankeys():
 
 def display_menu():
     lcd.clear()
-    lcd.message("1: Start PC\n2: LED Toggle\n3: Exit")
+    lcd.putstr("1: Start PC\n2: LED Toggle\n3: Exit")
     utime.sleep(1)
 
 def scankeysformenu(timeout=30):
@@ -71,7 +83,7 @@ def scankeysformenu(timeout=30):
                     key_press = matrix_keys[row][col]
                     print("Menu Selection:", key_press)
                     lcd.clear()
-                    lcd.message("Selected: " + key_press)
+                    lcd.putstr("Selected: " + key_press)
                     utime.sleep(0.3)  # Debounce delay
                     
                     if key_press == '1':
@@ -86,14 +98,14 @@ def scankeysformenu(timeout=30):
                     return  # Exit once a selection is made
             row_pins[row].value(0)  # Set row back to LOW
     lcd.clear()
-    lcd.message("Menu timed out")
+    lcd.putstr("Menu timed out")
     utime.sleep(2)
 
 def activate_relay():
     relayforswitch(1)
     print("Activating relay...")
     lcd.clear()
-    lcd.message("Starting PC")
+    lcd.putstr("Starting PC")
     relay.value(1)  # Turn the relay ON
     time.sleep(3)
     relay.value(0)  # Turn the relay OFF
@@ -105,7 +117,7 @@ def activate_relay():
 def toggle_led():
     print("Toggling LED...")
     lcd.clear()
-    lcd.message("Toggling LED")
+    lcd.putstr("Toggling LED")
     led.value(not led.value())  # Toggle LED state
     utime.sleep(1)
 
@@ -113,7 +125,7 @@ def checkPin(guess):
     if guess == secret_pin:
         print("You got the secret pin correct")
         lcd.clear()
-        lcd.message("Pin correct!")
+        lcd.putstr("Pin correct!")
         led.value(1)  # Turn ON LED
         utime.sleep(3)
         led.value(0)  # Turn OFF LED
@@ -122,11 +134,11 @@ def checkPin(guess):
     else:
         print("Better luck next time")
         lcd.clear()
-        lcd.message("Try again!")
+        lcd.putstr("Try again!")
 
 print("Enter the secret Pin")
 lcd.clear()
-lcd.message("Enter Pin:")
+lcd.putstr("Enter Pin:")
 
 while True:
     scankeys()
