@@ -26,10 +26,10 @@ led.value(0)  # Initialize LED to OFF
 relayforswitch = Pin(18, Pin.OUT)
 
 # Create a map between keypad buttons and characters
-matrix_keys = [['1', '4', '7', 'A'],
-               ['2', '5', '8', 'B'],
+matrix_keys = [['1', '4', '7', '*'],
+               ['2', '5', '8', '0'],
                ['3', '6', '9', '#'],
-               ['*', '0', '#', 'D']]
+               ['A', 'B', 'C', 'D']]
 
 # Define PINs according to cabling
 keypad_rows = [9, 8, 7, 6]
@@ -42,18 +42,28 @@ row_pins = []
 guess = []
 # Our secret pin, shhh do not tell anyone
 secret_pin = ['7', '8', '8', '4']
-
+lcd.custom_char(0, bytearray ([0x04,
+  0x04,
+  0x04,
+  0x04,
+  0x04,
+  0x15,
+  0x0E,
+  0x04]))
+lcd.custom_char(1, bytearray ([0x04,
+  0x0E,
+  0x15,
+  0x04,
+  0x04,
+  0x04,
+  0x04,
+  0x04]))
 # Initialize row and column pins
 for x in range(4):
     row_pins.append(Pin(keypad_rows[x], Pin.OUT))
     row_pins[x].value(0)  # Set rows to LOW initially
     col_pins.append(Pin(keypad_columns[x], Pin.IN, Pin.PULL_DOWN))
-def idk():
-    print("Enter the secret Pin")
-    lcd.clear()
-    lcd.putstr("Enter Pin:")
-    scankeys()
-    
+
 def scankeys():
     for row in range(4):
         row_pins[row].value(1)  # Set current row HIGH
@@ -62,8 +72,7 @@ def scankeys():
                 key_press = matrix_keys[row][col]
                 print("You have pressed:", key_press)
                 lcd.clear()
-                lcd.putstr("You pressed:    " + key_press)
-                lcd.putstr("".join(guess[-3:]))
+                lcd.putstr("You pressed:"+ key_press)  # Display pressed key
                 utime.sleep(0.3)  # Debounce delay
                 guess.append(key_press)
                 
@@ -74,10 +83,43 @@ def scankeys():
         
         row_pins[row].value(0)  # Set row back to LOW
 
+
+def zeichen():
+    lcd.clear()
+    lcd.move_to(15,1)
+    lcd.putchar(chr(0))
+    lcd.move_to(14,1)
+    lcd.putchar("D")
+    lcd.move_to(15,0)
+    lcd.putchar(chr(1))
+    lcd.move_to(14,0)
+    lcd.putchar("C")
+    
+def auswahl():
+    for row in range(4):
+        row_pins[row].value(1)  # Set current row HIGH
+        for col in range(4):
+            if col_pins[col].value() == 1:
+                key_press = matrix_keys[row][col]
+                if key_press == 'D':
+                    lcd.move_to(0,0)
+                elif key_press == 'C':
+                    lcd.clear()
+                    lcd.move_to(0,0)
+                    zeichen()
+                    lcd.putstr("2: LED Toggle\n3: Exit")
+    
+
 def display_menu():
     lcd.clear()
-    lcd.putstr("1: Start PC\n2: LED Toggle\n3: Exit")
+    zeichen()
+    #auswahl()
+    #lcd.putstr("1: Start PC\n2: LED Toggle\n3: Exit")
     utime.sleep(1)
+    lcd.move_to(0,0)
+    lcd.putstr("1: Start PC")
+    lcd.move_to(0,1)
+    lcd.putstr("2: LED Toggle")
 
 def scankeysformenu(timeout=30):
     start_time = time.time()
@@ -89,8 +131,8 @@ def scankeysformenu(timeout=30):
                     key_press = matrix_keys[row][col]
                     print("Menu Selection:", key_press)
                     lcd.clear()
-                    lcd.putstr("Selected: " + key_press)
-                    utime.sleep(0.3)  # Debounce delay
+                    #lcd.putstr("Selected: " + key_press)
+                    #utime.sleep(0.3)  # Debounce delay
                     
                     if key_press == '1':
                         activate_relay()
@@ -98,15 +140,36 @@ def scankeysformenu(timeout=30):
                         toggle_led()
                     elif key_press == '3':
                         lcd.clear()
-                        lcd.putstr("Exiting menu")
+                        lcd.message("Exiting menu")
                         utime.sleep(2)
+                    elif key_press == 'C':
+                        lcd.clear()
+                        zeichen()
+                        lcd.move_to(0,0)
+                        lcd.putstr("1: Start PC")
+                        lcd.move_to(0,1)
+                        lcd.putstr("2: LED Toggle")
+                    elif key_press == 'D':
+                        lcd.clear()
+                        zeichen()
+                        lcd.move_to(0,0)
+                        lcd.putstr("2: LED Toggle")
+                        lcd.move_to(0,1)
+                        lcd.putstr("3: Exit")
+                    elif key_press == '*':
+                        lcd.clear()
+                        zeichen()
+                        lcd.move_to(0,0)
+                        lcd.putstr("2: LED Toggle")
+                        lcd.move_to(0,1)
+                        lcd.putstr("3: Exit")
+                        
                         return
-                    return  # Exit once a selection is made
+                      # Exit once a selection is made
             row_pins[row].value(0)  # Set row back to LOW
     lcd.clear()
     lcd.putstr("Menu timed out")
     utime.sleep(2)
-    idk()
 
 def activate_relay():
     relayforswitch(1)
@@ -120,8 +183,6 @@ def activate_relay():
     utime.sleep(3)
     led.value(0)  # Turn OFF 
     relayforswitch(0)
-    idk()
-    
 
 def toggle_led():
     print("Toggling LED...")
@@ -129,8 +190,6 @@ def toggle_led():
     lcd.putstr("Toggling LED")
     led.value(not led.value())  # Toggle LED state
     utime.sleep(1)
-    idk()
-    
 
 def checkPin(guess):
     if guess == secret_pin:
@@ -143,9 +202,13 @@ def checkPin(guess):
         display_menu()
         scankeysformenu()
     else:
-        print("Better luck next time")
+        print("Gd Fck")
         lcd.clear()
-        lcd.putstr("Try again!")
+        lcd.putstr("Gd Fck Wrong pin")
+        utime.sleep(3)
+        lcd.clear()
+        scankeys()
+        lcd.putstr("Enter Pin:")
 
 print("Enter the secret Pin")
 lcd.clear()
