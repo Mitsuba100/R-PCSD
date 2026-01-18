@@ -20,10 +20,12 @@ i2c = I2C(0, sda=machine.Pin(0), scl=machine.Pin(1), freq=400000)
 lcd = I2cLcd(i2c, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)   
 
 # Initialize the relay and LED
-relay = Pin(16, Pin.OUT)
-led = Pin(15, Pin.OUT)
+relay = Pin(15, Pin.OUT)
+led = Pin(14, Pin.OUT)
 led.value(0)  # Initialize LED to OFF
-relayforswitch = Pin(18, Pin.OUT)
+relayforswitch = Pin(15, Pin.OUT)
+relay.value(1)
+relayforswitch.value(1)
 
 # Create a map between keypad buttons and characters
 matrix_keys = [['1', '4', '7', '*'],
@@ -41,7 +43,7 @@ row_pins = []
 # The keys entered by the user
 guess = []
 # Our secret pin, shhh do not tell anyone
-secret_pin = ['7', '8', '8', '4']
+secret_pin = ['7', '7', '7', '7']
 lcd.custom_char(0, bytearray ([0x04,
   0x04,
   0x04,
@@ -119,7 +121,7 @@ def display_menu():
     lcd.move_to(0,0)
     lcd.putstr("1: Start PC")
     lcd.move_to(0,1)
-    lcd.putstr("2: LED Toggle")
+    lcd.putstr("2: Power-Reset")
 
 def scankeysformenu(timeout=30):
     start_time = time.time()
@@ -137,7 +139,7 @@ def scankeysformenu(timeout=30):
                     if key_press == '1':
                         activate_relay()
                     elif key_press == '2':
-                        toggle_led()
+                        hard_reset()
                     elif key_press == '3':
                         lcd.clear()
                         lcd.message("Exiting menu")
@@ -148,7 +150,7 @@ def scankeysformenu(timeout=30):
                         lcd.move_to(0,0)
                         lcd.putstr("1: Start PC")
                         lcd.move_to(0,1)
-                        lcd.putstr("2: LED Toggle")
+                        lcd.putstr("2: Power-Reset")
                     elif key_press == 'D':
                         lcd.clear()
                         zeichen()
@@ -170,19 +172,45 @@ def scankeysformenu(timeout=30):
     lcd.clear()
     lcd.putstr("Menu timed out")
     utime.sleep(2)
+    lcd.clear()
+    lcd.putstr("Enter Pin:")
+    scankeys()
 
 def activate_relay():
-    relayforswitch(1)
+    relayforswitch(0)
     print("Activating relay...")
     lcd.clear()
     lcd.putstr("Starting PC")
-    relay.value(1)  # Turn the relay ON
-    time.sleep(3)
-    relay.value(0)  # Turn the relay OFF
+    relay.value(0)  # Turn the relay ON
+    time.sleep(0.2)
+    relay.value(1)  # Turn the relay OFF
     led.value(1)  # Turn ON LED
-    utime.sleep(3)
+    utime.sleep(0.2)
     led.value(0)  # Turn OFF 
+    relayforswitch(1)
+    lcd.clear()
+    scankeys()
+    print("Enter the secret Pin")
+    lcd.clear()
+    lcd.putstr("Enter Pin:")
+    
+def hard_reset():
     relayforswitch(0)
+    print("Activating relay...")
+    lcd.clear()
+    lcd.putstr("Hard Power-Reset")
+    relay.value(0)  # Turn the relay ON
+    time.sleep(5)
+    relay.value(1)  # Turn the relay OFF
+    led.value(1)  # Turn ON LED
+    utime.sleep(5)
+    led.value(0)  # Turn OFF 
+    relayforswitch(1)
+    lcd.clear()
+    scankeys()
+    print("Enter the secret Pin")
+    lcd.clear()
+    lcd.putstr("Enter Pin:")
 
 def toggle_led():
     print("Toggling LED...")
@@ -216,3 +244,4 @@ lcd.putstr("Enter Pin:")
 
 while True:
     scankeys()
+
